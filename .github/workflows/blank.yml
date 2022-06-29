@@ -30,6 +30,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build,second]
     if: |
+      always() &&
       contains(needs.build.result, 'success') &&
       contains(needs.second.result, 'cancelled')
     steps:
