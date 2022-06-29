@@ -1,0 +1,36 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Test
+
+on:
+  push:
+    branches: [ "main" ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Success
+        run: pwd
+  second:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Canceled
+        run: echo "Hello, world!"
+  need_to_result:
+    runs-on: ubuntu-latest
+    needs: [build,second]
+    if: |
+      contains(needs.build.result, 'success') &&
+      contains(needs.second.result, 'cancelled')
+    steps:
+      - uses: actions/checkout@v3
+      - name: If first success and second canceled
+        run: echo "Hello, world! ${{ job.need_to_result.name }}"
+
