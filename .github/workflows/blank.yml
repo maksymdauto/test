@@ -15,8 +15,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Success
-        run: pwd
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v1
   second:
     runs-on: ubuntu-latest
     steps:
