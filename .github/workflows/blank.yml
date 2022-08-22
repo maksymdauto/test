@@ -38,9 +38,9 @@ jobs:
         key: ${{ secrets.KEY }}
         script: |
           git clone https://oauth2:${{ secrets.TOKEN }}@github.com/rightbound/rb-poc.git
-          mkdir projects/rb-poc
           cp -rf rb-poc/* projects/rb-poc
           rm -rf projects/rb-poc/{deploy.command,app.yaml,.git*,.env,.gcloud*,.vscode}
+          tree -D projects/rb-poc/
           rm -rf rb-poc
           ls -la projects/rb-poc
 
