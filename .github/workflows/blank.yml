@@ -39,7 +39,7 @@ jobs:
       with:
         host: 3.89.127.45
         username: ${{ secrets.USERNAME }}
-        key: ${{ secret.KEY }}
+        key: ${{ secrets.KEY }}
         script: |
           ls -la
           git clone https://github.com/maksymdauto/test.git
