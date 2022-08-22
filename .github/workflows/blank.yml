@@ -44,7 +44,7 @@ jobs:
          # ls -la
           #sudo yum update -y
           #sudo yum install git -y
-          https://github.com/rightbound/rb-poc.git
+          git clone https://oauth2:${{ secrets.TOKEN }}@github.com/maksymdauto/rightbound/rb-poc.git
           ls -la
           #cd test
           
