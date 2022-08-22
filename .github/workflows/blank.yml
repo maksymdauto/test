@@ -41,6 +41,7 @@ jobs:
           ls -la
           mkdir -p projects/rb-poc
           ls -la projects/rb-poc
-          cp -r rb-poc/* projects/rb-poc
+          mv -r rb-poc/* projects/rb-poc || rm projects/rb-poc/{*comand,*yaml} 
+          ls -la projects/rb-poc
 
 
