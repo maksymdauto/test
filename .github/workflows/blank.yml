@@ -58,6 +58,7 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           instance-ids: i-0965612343fd2a477
+          working-directory: /home/ec2-user
           command: |
                  cd /home/ssm-user/
                  ls -al
