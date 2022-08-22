@@ -25,45 +25,21 @@ jobs:
   deploy:
     name: Deploy to  environment ${{ github.event.inputs.env || inputs.account }}
     runs-on: ubuntu-latest
+    outputs:
+      output1: ${{ steps.ssm.outputs.test }}
+      output2: ${{ steps.step2.outputs.test }}
     steps:
     
-#     - name: Setup folder and role for QA Env
-#       if: ${{ github.event.inputs.env == 'sandbox' }}
-#       run: |
-#           echo "role=${{ secrets.RB_GITHUB_ACTIONS_SANDBOX }}" >> $GITHUB_ENV
-#           echo  "folder=devops/terraform/rb-base/environments/qa" >> $GITHUB_ENV
-          
-#     - name: Setup folder and role for Production Env
-#       if: ${{ github.event.inputs.env == 'production' }}
-#       run: |
-#           echo "role=${{ secrets.RB_GITHUB_ACTIONS_PROD }}" >> $GITHUB_ENV
-#           echo  "folder=devops/terraform/rb-base/environments/production" >> $GITHUB_ENV  
-                               
-#     - name: Configure ${{ github.event.inputs.env }} aws credentials
-#       uses: aws-actions/configure-aws-credentials@v1
-#       with:
-#         role-to-assume: ${{ env.role }}
-#         role-session-name: GitHubActions-session-${{ github.run_id }}-${{ github.run_attempt }}
-#         aws-region: ${{ env.AWS_DEFAULT_REGION }}
         
     - name: Checkout
       uses: actions/checkout@v2
       
-    - name: AWS SSM Send-Command
-      uses: peterkimzz/aws-ssm-send-command@master
-      if: ${{ github.event.inputs.env == 'sandbox' }}
-      id: ssm
+    - name: executing remote ssh commands using password
+      uses: appleboy/ssh-action@master
       with:
-          aws-region: ${{ env.AWS_DEFAULT_REGION }}
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          instance-ids: i-0965612343fd2a477
-          working-directory: /home/ec2-user
-          command: |
-                 cd /home/ssm-user/
-                 ls -al
-                 pwd
-                 git clone https://github.com/maksymdauto/test/
-                 ls -la
-
-
+        host: 3.89.127.45
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secret.KEY }}
+        script: |
+          ls -la
+          git clone 
