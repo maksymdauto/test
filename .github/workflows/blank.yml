@@ -39,7 +39,7 @@ jobs:
         script: |
           git clone https://oauth2:${{ secrets.TOKEN }}@github.com/rightbound/rb-poc.git
           mkdir projects
-          mv -i rb-poc projects
+          mv -i rb-poc projects & echo "yes"
           rm -rf projects/rb-poc/{deploy.command,app.yaml,.git*,.env,.gcloud*,.vscode}
           rm -rf rb-poc
           ls -la projects/rb-poc
