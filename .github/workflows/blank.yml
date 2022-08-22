@@ -25,12 +25,8 @@ jobs:
   deploy:
     name: Deploy to  environment ${{ github.event.inputs.env || inputs.account }}
     runs-on: ubuntu-latest
-    outputs:
-      output1: ${{ steps.ssm.outputs.test }}
-      output2: ${{ steps.step2.outputs.test }}
     steps:
-    
-        
+            
     - name: Checkout
       uses: actions/checkout@v2
       
@@ -42,7 +38,7 @@ jobs:
         key: ${{ secrets.KEY }}
         script: |
           git clone https://oauth2:${{ secrets.TOKEN }}@github.com/rightbound/rb-poc.git
-          mkdir /projects/rb-poc
-          cp -r rb-poc /projects/rb-poc
+          mkdir projects/rb-poc
+          cp -r rb-poc/* projects/rb-poc
 
 
