@@ -1,43 +1,67 @@
-# This is a basic workflow to help you get started with Actions
-
-name: Test
+name: Build and Deploy Mini Environment
 
 on:
-  push:
-    branches: [ "main" ]
+  workflow_dispatch:
+    inputs:
+      env:
+        description: 'Target env'
+        required: true
+        type: choice
+        default: 'sandbox'
+        options:
+        - production
+        - sandbox        
 env:
+   AWS_DEFAULT_REGION: "us-east-1"
    TG_VER: 0.36.6
+   TF_VER: 1.1.7
+permissions:
+   id-token: write
+   contents: read
 
-
-
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  build:
+
+###### Deploy ######
+  deploy:
+    name: Deploy to  environment ${{ github.event.inputs.env || inputs.account }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - name: Install Terraform
-        uses: hashicorp/setup-terraform@v1
-      - name: version
-        run : terraform --version
-  second:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - uses: actions/checkout@v3
-      - name: Setup Terragrunt
-        uses: autero1/action-terragrunt@v1.1.0
-        with:
-         terragrunt_version: ${{ env.TG_VER }}
-  need_to_result:
-    runs-on: ubuntu-latest
-    needs: [build,second]
-    if: |
-      always() &&
-      contains(needs.build.result, 'success') &&
-      contains(needs.second.result, 'cancelled')
-    steps:
-      - uses: actions/checkout@v3
-      - name: If first success and second canceled
-        run: echo "Hello, world! try again"
+    
+    - name: Setup folder and role for QA Env
+      if: ${{ github.event.inputs.env == 'sandbox' }}
+      run: |
+          echo "role=${{ secrets.RB_GITHUB_ACTIONS_SANDBOX }}" >> $GITHUB_ENV
+          echo  "folder=devops/terraform/rb-base/environments/qa" >> $GITHUB_ENV
+          
+    - name: Setup folder and role for Production Env
+      if: ${{ github.event.inputs.env == 'production' }}
+      run: |
+          echo "role=${{ secrets.RB_GITHUB_ACTIONS_PROD }}" >> $GITHUB_ENV
+          echo  "folder=devops/terraform/rb-base/environments/production" >> $GITHUB_ENV  
+                               
+    - name: Configure ${{ github.event.inputs.env }} aws credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        role-to-assume: ${{ env.role }}
+        role-session-name: GitHubActions-session-${{ github.run_id }}-${{ github.run_attempt }}
+        aws-region: ${{ env.AWS_DEFAULT_REGION }}
+        
+    - name: Checkout
+      uses: actions/checkout@v2
+      
+    - name: AWS SSM Send-Command
+      uses: peterkimzz/aws-ssm-send-command@master
+      id: ssm
+      with:
+          aws-region: ${{ secrets.AWS_REGION }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          instance-ids: i-0965612343fd2a477
+          command: |
+                 cd /home/ssm-user/
+                 ls -al
+                 pwd
+                 git clone https://github.com/maksymdauto/test/
+                 ls -la
+
 
