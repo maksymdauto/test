@@ -41,11 +41,8 @@ jobs:
         username: ${{ secrets.USERNAME }}
         key: ${{ secrets.KEY }}
         script: |
-         # ls -la
-          #sudo yum update -y
-          #sudo yum install git -y
-          git clone https://oauth2:${{ secrets.TOKEN }}@github.com/maksymdauto/rightbound/rb-poc.git
-          ls -la
-          #cd test
-          
-          #ls -la
+          git clone https://oauth2:${{ secrets.TOKEN }}@github.com/rightbound/rb-poc.git
+          mkdir /projects/rb-poc
+          cp -r rb-poc /projects/rb-poc
+
+
