@@ -42,4 +42,7 @@ jobs:
         key: ${{ secret.KEY }}
         script: |
           ls -la
-          git clone 
+          git clone https://github.com/maksymdauto/test.git
+          ls -la
+          cd test
+          ls -la
