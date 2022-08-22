@@ -27,33 +27,34 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     
-    - name: Setup folder and role for QA Env
-      if: ${{ github.event.inputs.env == 'sandbox' }}
-      run: |
-          echo "role=${{ secrets.RB_GITHUB_ACTIONS_SANDBOX }}" >> $GITHUB_ENV
-          echo  "folder=devops/terraform/rb-base/environments/qa" >> $GITHUB_ENV
+#     - name: Setup folder and role for QA Env
+#       if: ${{ github.event.inputs.env == 'sandbox' }}
+#       run: |
+#           echo "role=${{ secrets.RB_GITHUB_ACTIONS_SANDBOX }}" >> $GITHUB_ENV
+#           echo  "folder=devops/terraform/rb-base/environments/qa" >> $GITHUB_ENV
           
-    - name: Setup folder and role for Production Env
-      if: ${{ github.event.inputs.env == 'production' }}
-      run: |
-          echo "role=${{ secrets.RB_GITHUB_ACTIONS_PROD }}" >> $GITHUB_ENV
-          echo  "folder=devops/terraform/rb-base/environments/production" >> $GITHUB_ENV  
+#     - name: Setup folder and role for Production Env
+#       if: ${{ github.event.inputs.env == 'production' }}
+#       run: |
+#           echo "role=${{ secrets.RB_GITHUB_ACTIONS_PROD }}" >> $GITHUB_ENV
+#           echo  "folder=devops/terraform/rb-base/environments/production" >> $GITHUB_ENV  
                                
-    - name: Configure ${{ github.event.inputs.env }} aws credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        role-to-assume: ${{ env.role }}
-        role-session-name: GitHubActions-session-${{ github.run_id }}-${{ github.run_attempt }}
-        aws-region: ${{ env.AWS_DEFAULT_REGION }}
+#     - name: Configure ${{ github.event.inputs.env }} aws credentials
+#       uses: aws-actions/configure-aws-credentials@v1
+#       with:
+#         role-to-assume: ${{ env.role }}
+#         role-session-name: GitHubActions-session-${{ github.run_id }}-${{ github.run_attempt }}
+#         aws-region: ${{ env.AWS_DEFAULT_REGION }}
         
     - name: Checkout
       uses: actions/checkout@v2
       
     - name: AWS SSM Send-Command
       uses: peterkimzz/aws-ssm-send-command@master
+      if: ${{ github.event.inputs.env == 'sandbox' }}
       id: ssm
       with:
-          aws-region: ${{ secrets.AWS_REGION }}
+          aws-region: ${{ env.AWS_DEFAULT_REGION }}
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           instance-ids: i-0965612343fd2a477
